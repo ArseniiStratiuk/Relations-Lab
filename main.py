@@ -9,7 +9,7 @@ def read_file(filename: str) -> list[list[int]]:
 
     >>> import tempfile
     >>> with tempfile.NamedTemporaryFile(mode = "w", delete=False) as tmp:
-    ...     _ = tmp.write('001\\n011\\n111')
+    ...     _ = tmp.write('0 0 1\\n0 1 1\\n1 1 1\\n')
     >>> read_file(tmp.name)
     [[0, 0, 1], [0, 1, 1], [1, 1, 1]]
     """
@@ -23,13 +23,13 @@ def write_to_file(filename: str, relation: list[list[int]]) -> None:
     >>> import tempfile
     >>> with tempfile.NamedTemporaryFile(mode = "w", delete=False) as tmp:
     ...     _ = tmp.write('')
-    >>> write_to_file([[0,1,0,0], [1,1,1,1], [1,0,0,0], [1,1,1,1]], tmp.name)
+    >>> write_to_file([[0, 1, 0, 0], [1, 1, 1, 1], [1, 0, 0, 0], [1, 1, 1, 1]], tmp.name)
     >>> with open(tmp.name, "r", encoding="utf-8") as file:
     ...     print(file.read())
-    0100
-    1111
-    1000
-    1111
+    0 1 0 0
+    1 1 1 1
+    1 0 0 0
+    1 1 1 1
     """
     pass
 
