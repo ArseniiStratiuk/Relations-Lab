@@ -1,11 +1,15 @@
 """
 Discrete mathematics relations laboratory project.
 """
+from copy import deepcopy
 
 
 def read_file(filename: str) -> list[list[int]]:
     """
     Read matrix from a file and transform it into a list of lists.
+
+    :param filename: str, A path to the file.
+    :return: list[list[int]], A matrix that was read from a file.
 
     >>> import tempfile
     >>> with tempfile.NamedTemporaryFile(mode = "w", delete=False) as tmp:
@@ -26,7 +30,11 @@ def read_file(filename: str) -> list[list[int]]:
 
 def write_file(filename: str, relation: list[list[int]]) -> None:
     """
-    Create a file with input from {matrix}.
+    Create a file with input from the matrix.
+
+    :param filename: str, A path to the file.
+    :param relation: list[list[int]], A matrix to write into the file.
+    :return: None
 
     >>> import tempfile
     >>> with tempfile.NamedTemporaryFile(mode = "w", delete=False) as tmp:
@@ -48,23 +56,55 @@ def write_file(filename: str, relation: list[list[int]]) -> None:
             f.write(', '.join(line) + '\n')
 
 
-def find_symmetrical_closure(matrix: list[list[int]])-> list[list[int]]:
+def find_symmetric_closure(matrix: list[list[int]])-> list[list[int]]:
     """
-    Find the symmetrical closure of the {matrix}.
+    Find the symmetric closure of the matrix.
+
+    :param matrix: list[list[int]], An input relation represented as a matrix.
+    :return: list[list[int]], The symmetric closure of the input relation
+    represented as a matrix.
+
+    >>> matrix = [[0, 1, 1], [0, 0, 1], [0, 1, 1]]
+    >>> print(find_symmetric_closure(matrix))
+    [[0, 1, 1], [1, 0, 1], [1, 1, 1]]
     """
-    pass
+    new_pairs = []
+    symmetric_matrix = deepcopy(matrix)
+    for row, line in enumerate(matrix):
+        for column, value in enumerate(line):
+            if value:
+                # Note a symmetric pair that has to be included.
+                new_pairs.append((column, row))
+
+    for pair in new_pairs:
+        row, column = pair
+        symmetric_matrix[row][column] = 1
+
+    return symmetric_matrix
 
 
 def find_reflexive_closure(matrix: list[list[int]])-> list[list[int]]:
     """
-    Find the reflexive closure of the {matrix}.
+    Find the reflexive closure of the matrix.
+
+    :param matrix: list[list[int]], An input relation represented as a matrix.
+    :return: list[list[int]], The reflexive closure of the input relation
+    represented as a matrix.
+
+    >>> matrix = [[0, 1, 1], [0, 0, 1], [0, 1, 1]]
+    >>> print(find_reflexive_closure(matrix))
+    [[1, 1, 1], [0, 1, 1], [0, 1, 1]]
     """
-    pass
+    reflexive_matrix = deepcopy(matrix)
+    for column, row in enumerate(reflexive_matrix):
+        row[column] = 1
+
+    return reflexive_matrix
 
 
 def find_transitive_closure(matrix: list[list[int]])-> list[list[int]]:
     """
-    Find the transitive closure of the {matrix}.
+    Find the transitive closure of the matrix.
     """
     pass
 
@@ -110,3 +150,6 @@ def find_transitive_number(number: int)-> int:
 if __name__ == '__main__':
     import doctest
     print(doctest.testmod())
+    input_matrix = read_file('input.csv')
+    result = find_reflexive_closure(input_matrix)
+    write_file('output.csv', result)
