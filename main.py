@@ -9,29 +9,43 @@ def read_file(filename: str) -> list[list[int]]:
 
     >>> import tempfile
     >>> with tempfile.NamedTemporaryFile(mode = "w", delete=False) as tmp:
-    ...     _ = tmp.write('0 0 1\\n0 1 1\\n1 1 1\\n')
+    ...     _ = tmp.write('0, 0, 1\\n0, 1, 1\\n1, 1, 1\\n')
     >>> read_file(tmp.name)
     [[0, 0, 1], [0, 1, 1], [1, 1, 1]]
     """
-    pass
+    matrix = []
+    with open(filename, 'r', encoding='utf-8') as f:
+        for line in f:
+            row = []
+            for i in line.strip().split(','):
+                row.append(int(i.strip()))
+            matrix.append(row)
+
+    return matrix
 
 
-def write_to_file(filename: str, relation: list[list[int]]) -> None:
+def write_file(filename: str, relation: list[list[int]]) -> None:
     """
     Create a file with input from {matrix}.
 
     >>> import tempfile
     >>> with tempfile.NamedTemporaryFile(mode = "w", delete=False) as tmp:
     ...     _ = tmp.write('')
-    >>> write_to_file([[0, 1, 0, 0], [1, 1, 1, 1], [1, 0, 0, 0], [1, 1, 1, 1]], tmp.name)
+    >>> write_file(tmp.name, [[0, 1, 0, 0], [1, 1, 1, 1], [1, 0, 0, 0], [1, 1, 1, 1]])
     >>> with open(tmp.name, "r", encoding="utf-8") as file:
     ...     print(file.read())
-    0 1 0 0
-    1 1 1 1
-    1 0 0 0
-    1 1 1 1
+    0, 1, 0, 0
+    1, 1, 1, 1
+    1, 0, 0, 0
+    1, 1, 1, 1
+    <BLANKLINE>
     """
-    pass
+    with open(filename, 'w', encoding='utf-8') as f:
+        for row in relation:
+            line = []
+            for i in row:
+                line.append(str(i))
+            f.write(', '.join(line) + '\n')
 
 
 def find_symmetrical_closure(matrix: list[list[int]])-> list[list[int]]:
@@ -81,7 +95,7 @@ def find_transitive_number(number: int)-> int:
     """
     Return how many transitive relations are there on relation with n elements.
 
-    :param number: int, Must be <= 4.
+    :param number: int, Must be <= 6.
 
     >>> find_transitive_number(0)
     1
