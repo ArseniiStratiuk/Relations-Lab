@@ -102,31 +102,9 @@ def reflexive_closure(matrix: list[list[int]]) -> list[list[int]]:
     return reflexive_matrix
 
 
-def cartesian_product(set_1: list[int],
-                      set_2: list[int]) -> list[tuple[int, int]]:
-    """
-    Find the Cartesian product of two input sets.
-
-    :param set_1: list[int], The first set represented as a list of integers.
-    :param set_2: list[int], The second set represented as a list of integers.
-    :return: list[tuple[int, int]], A list of the result pairs.
-
-    >>> print(cartesian_product([1, 2], [0, 3]))
-    [(1, 0), (1, 3), (2, 0), (2, 3)]
-    >>> print(cartesian_product([1, 2], []))
-    []
-    """
-    if len(set_1) == 0 or len(set_2) == 0:
-        return []
-
-    pairs = [(i, j) for i in set_1 for j in set_2]
-
-    return pairs
-
-
 def transitive_closure(matrix: list[list[int]]) -> list[list[int]]:
     """
-    Find the transitive closure of the matrix.
+    Find the transitive closure of the matrix using the Warshall algorithm.
 
     :param matrix: list[list[int]], An input relation represented as a matrix.
     :return: list[list[int]], The transitive closure of the input relation
@@ -136,18 +114,17 @@ def transitive_closure(matrix: list[list[int]]) -> list[list[int]]:
     >>> print(transitive_closure(matrix))
     [[0, 1, 1], [0, 1, 1], [0, 1, 1]]
     """
+    length = len(matrix)
     transitive_matrix = deepcopy(matrix)
-    for column, row in enumerate(transitive_matrix):
-        row = [idx for idx, val in enumerate(row) if val == 1]
-        column = [idx for idx, row in enumerate(transitive_matrix) if row[column] == 1]
-        new_pairs = cartesian_product(column, row)
 
-        if len(new_pairs) == 0:
-            continue
-
-        for pair in new_pairs:
-            row, column = pair
-            transitive_matrix[row][column] = 1
+    for k in range(length):
+        for i in range(length):
+            for j in range(length):
+                # If there is a path from i to k and from k to j,
+                # then there is a path from i to j.
+                transitive_matrix[i][j] = (
+                    transitive_matrix[i][j] | (transitive_matrix[i][k] & transitive_matrix[k][j])
+                )
 
     return transitive_matrix
 
