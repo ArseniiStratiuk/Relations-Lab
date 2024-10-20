@@ -2,6 +2,8 @@
 Discrete mathematics relations laboratory project.
 """
 from copy import deepcopy
+from time import monotonic
+from itertools import product
 
 
 def read_file(filename: str) -> list[list[int]]:
@@ -135,11 +137,35 @@ def split_into_classes(matrix: list[list[int]]) -> list[list[int]]:
 
     >>> split_into_classes([[1, 1, 1, 0], [1, 1, 1, 0], [1, 1, 1, 0], [0, 0, 0, 1]])
     [[0, 1, 2], [3]]
+    >>> split_into_classes([[1, 0, 0, 0], [0, 1, 0, 0], [0, 0, 1, 0], [0, 0, 0, 1]])
+    [[0], [1], [2], [3]]
+    >>> split_into_classes([[1, 0, 0, 1], [0, 1, 0, 0], [0, 0, 1, 0], [1, 0, 0, 1]])
+    [[0, 3], [1], [2]]
+    >>> split_into_classes([[1, 0, 0, 1], [0, 1, 1, 0], [0, 1, 1, 0], [1, 0, 0, 1]])
+    [[0, 3], [1, 2]]
+    >>> split_into_classes([[1, 0, 1, 1], [0, 1, 1, 0], [0, 1, 1, 0], [1, 0, 1, 1]])
+    [[]]
     """
-    pass
+    if transitive_closure(
+            symmetric_closure(
+                reflexive_closure(matrix)
+            )
+    ) != matrix:
+        return [[]]
+
+    n = len(matrix)
+    classes = list()
+    included = set()
+    for i in range(n):
+        if i not in included:
+            class_ = [j for j in range(n) if matrix[i][j]]
+            included = included.union(class_)
+            classes.append(class_)
+
+    return classes
 
 
-def is_transitive(matrix: list[list]) -> bool:
+def is_transitive(matrix: list[list[int]]) -> bool:
     """
     Check if the given relation is transitive. Return True if yes, otherwise False.
 
@@ -148,7 +174,17 @@ def is_transitive(matrix: list[list]) -> bool:
     >>> is_transitive([[0, 1, 1, 0], [0, 0, 0, 1], [0, 0, 0, 0], [0, 0, 0, 0]])
     False
     """
-    pass
+    length = len(matrix)
+    for i in range(length):
+        for j in range(length):
+            row_i = matrix[i]
+            if i != j and row_i[j]:
+                row_j = matrix[j]
+                for k in range(length):
+                    if row_j[k] and not row_i[k]:
+                        return False
+
+    return True
 
 
 def transitive_number(number: int) -> int:
@@ -163,8 +199,26 @@ def transitive_number(number: int) -> int:
     13
     >>> transitive_number(3)
     171
+    >>> transitive_number(4)
+    3994
+    >>> transitive_number(5)
+    154303
     """
-    pass
+
+    count = 0
+    start = monotonic()
+    # get all binary variations from 1 to 2^total_elements using a product generator
+    for binary_tuple in product((0, 1), repeat=number * number):
+        # form a matrix [[i1j1...i1jn],...[inj1...injn]]
+        matrix = [
+            list(binary_tuple[i * number:(i + 1) * number])
+            for i in range(number)
+        ]
+        count += is_transitive(matrix)
+
+    print(f"Time: {monotonic() - start} s")
+
+    return count
 
 
 if __name__ == '__main__':
