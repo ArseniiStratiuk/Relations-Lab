@@ -204,7 +204,6 @@ def transitive_number(number: int) -> int:
     >>> transitive_number(5)
     154303
     """
-
     count = 0
     start = monotonic()
     # get all binary variations from 1 to 2^total_elements using a product generator
@@ -222,8 +221,9 @@ def transitive_number(number: int) -> int:
 
 
 if __name__ == '__main__':
-    import doctest
-    print(doctest.testmod())
-    # input_matrix = read_file('input.csv')
-    # result = transitive_closure(input_matrix)
-    # write_file('output.csv', result)
+    # import doctest
+    # print(doctest.testmod())
+
+    input_matrix = read_file('input.csv')
+    result = transitive_closure(input_matrix)
+    write_file('output.csv', result)
