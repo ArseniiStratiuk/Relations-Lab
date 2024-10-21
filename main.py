@@ -135,6 +135,9 @@ def split_into_classes(matrix: list[list[int]]) -> list[list[int]]:
     """
     Split the relation into equivalence classes.
 
+    :param matrix: list[list[int]], An input relation represented as a matrix.
+    :return: list[list[int]], A result list of equivalence classes.
+
     >>> split_into_classes([[1, 1, 1, 0], [1, 1, 1, 0], [1, 1, 1, 0], [0, 0, 0, 1]])
     [[0, 1, 2], [3]]
     >>> split_into_classes([[1, 0, 0, 0], [0, 1, 0, 0], [0, 0, 1, 0], [0, 0, 0, 1]])
@@ -167,7 +170,10 @@ def split_into_classes(matrix: list[list[int]]) -> list[list[int]]:
 
 def is_transitive(matrix: list[list[int]]) -> bool:
     """
-    Check if the given relation is transitive. Return True if yes, otherwise False.
+    Check if the given relation is transitive.
+
+    :param matrix: list[list[int]], An input relation represented as a matrix.
+    :return: bool, True if the given relation is transitive, otherwise False.
 
     >>> is_transitive([[0, 0, 0, 0], [1, 0, 1, 1], [1, 0, 1, 1], [1, 0, 1, 1]])
     True
@@ -192,6 +198,7 @@ def transitive_number(number: int) -> int:
     Return how many transitive relations are there on relation with n elements.
 
     :param number: int, Must be <= 6.
+    :return: int, Number of all possible transitive relations.
 
     >>> transitive_number(0)
     1
@@ -206,24 +213,25 @@ def transitive_number(number: int) -> int:
     """
     count = 0
     start = monotonic()
-    # get all binary variations from 1 to 2^total_elements using a product generator
+
+    # Get all binary variations from 1 to 2^total_elements using a product generator.
     for binary_tuple in product((0, 1), repeat=number * number):
-        # form a matrix [[i1j1...i1jn],...[inj1...injn]]
+        # Form a matrix [[i1j1...i1jn],...[inj1...injn]].
         matrix = [
             list(binary_tuple[i * number:(i + 1) * number])
             for i in range(number)
         ]
         count += is_transitive(matrix)
 
-    print(f"Time: {monotonic() - start} s")
+    # print(f"Time: {monotonic() - start} s")
 
     return count
 
 
 if __name__ == '__main__':
-    # import doctest
-    # print(doctest.testmod())
+    import doctest
+    print(doctest.testmod())
 
-    input_matrix = read_file('input.csv')
-    result = transitive_closure(input_matrix)
-    write_file('output.csv', result)
+    # input_matrix = read_file('input.csv')
+    # result = transitive_closure(input_matrix)
+    # write_file('output.csv', result)
